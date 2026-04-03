@@ -8,6 +8,7 @@ const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const DATA_FILE = path.join(DATA_DIR, "db.json");
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7;
+const ADMIN_VIEW_KEY = process.env.ADMIN_VIEW_KEY || "";
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -123,6 +124,25 @@ function formatLeaderboard(db, limit = 10) {
     .map((r) => ({ username: r.username, score: r.score, createdAt: r.createdAt }));
 }
 
+function isAdminRequestAuthorized(req, url) {
+  if (!ADMIN_VIEW_KEY) return false;
+  const queryKey = url.searchParams.get("key") || "";
+  const headerKey = req.headers["x-admin-key"] || "";
+  const candidate = String(queryKey || headerKey);
+  if (!candidate) return false;
+  const a = Buffer.from(candidate);
+  const b = Buffer.from(ADMIN_VIEW_KEY);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+function sanitizeDbForAdmin(db) {
+  return {
+    users: db.users.map((u) => ({ id: u.id, username: u.username, createdAt: u.createdAt })),
+    scores: db.scores,
+  };
+}
+
 function createSession(res, userId) {
   const token = crypto.randomBytes(24).toString("hex");
   const expiresAt = Date.now() + SESSION_TTL_MS;
@@ -214,6 +234,18 @@ async function handleApi(req, res) {
     const limit = Math.max(1, Math.min(30, Number(url.searchParams.get("limit") || 10)));
     const items = formatLeaderboard(db, limit);
     return sendJson(res, 200, { items });
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/admin/db") {
+    if (!isAdminRequestAuthorized(req, url)) {
+      return sendJson(res, 403, { error: "Forbidden: invalid admin key" });
+    }
+    return sendJson(res, 200, {
+      now: Date.now(),
+      usersCount: db.users.length,
+      scoresCount: db.scores.length,
+      db: sanitizeDbForAdmin(db),
+    });
   }
 
   return sendJson(res, 404, { error: "API route not found" });
