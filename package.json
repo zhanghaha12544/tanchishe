@@ -1,0 +1,9 @@
+{
+  "name": "tanchishe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Neon Snake web game with auth and leaderboard",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
