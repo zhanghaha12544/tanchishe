@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Snake Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="bg-noise"></div>
+
+  <main class="app">
+    <section class="panel top">
+      <div class="brand">
+        <p class="eyebrow">Arcade Experience</p>
+        <h1>Neon Snake Arena</h1>
+      </div>
+      <div class="stats">
+        <article>
+          <span>Score</span>
+          <strong id="score">0</strong>
+        </article>
+        <article>
+          <span>Best</span>
+          <strong id="best">0</strong>
+        </article>
+        <article>
+          <span>Speed</span>
+          <strong id="speed">1x</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="left-col">
+        <section class="panel game-shell">
+          <canvas id="game" width="560" height="560" aria-label="Snake game canvas"></canvas>
+          <div id="overlay" class="overlay show">
+            <h2 id="overlayTitle">Press Start</h2>
+            <p id="overlayText">Use Arrow keys / WASD to move. Mobile can use buttons below.</p>
+          </div>
+        </section>
+
+        <section class="panel controls">
+          <div class="actions">
+            <button id="startBtn" class="btn primary">Start</button>
+            <button id="pauseBtn" class="btn">Pause</button>
+            <button id="restartBtn" class="btn danger">Restart</button>
+          </div>
+          <p id="toast" class="toast"></p>
+          <div class="mobile-pad" aria-label="mobile controls">
+            <button class="pad-btn" data-dir="up">&#9650;</button>
+            <div class="pad-row">
+              <button class="pad-btn" data-dir="left">&#9664;</button>
+              <button class="pad-btn" data-dir="down">&#9660;</button>
+              <button class="pad-btn" data-dir="right">&#9654;</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="right-col">
+        <section class="panel auth-panel">
+          <h3>Player Access</h3>
+          <p id="authStatus" class="small-muted">Not logged in</p>
+          <div id="authFormWrap">
+            <input id="usernameInput" class="field" type="text" maxlength="20" placeholder="Username">
+            <input id="passwordInput" class="field" type="password" maxlength="64" placeholder="Password">
+            <div class="auth-actions">
+              <button id="loginBtn" class="btn primary">Login</button>
+              <button id="registerBtn" class="btn">Register</button>
+            </div>
+          </div>
+          <button id="logoutBtn" class="btn danger hidden">Logout</button>
+        </section>
+
+        <section class="panel rank-panel">
+          <div class="rank-head">
+            <h3>Leaderboard</h3>
+            <button id="refreshRankBtn" class="btn tiny">Refresh</button>
+          </div>
+          <ol id="leaderboard" class="rank-list"></ol>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

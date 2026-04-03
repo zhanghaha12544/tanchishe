@@ -1,0 +1,7 @@
+.vs/
+*.exe
+*.obj
+*.pdb
+*.ilk
+data/
+node_modules/
